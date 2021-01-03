@@ -187,17 +187,31 @@ void Generation(int gen){
 //現状：ホームポジションにあるキーが入力されたらcount++(簡単だったから)
 int ObjFunc(int i){
   
-  int j,k,n=0;
-  int count = 0;
+  int j,k = 0;
+  int count = 0; //指が移動してしまった回数
+  int point = 0; //返す評価値
   for(j=0;j<STRINGS;j++){
+    int n = 0; //文字列の添字
     while(str[j][n]!='\0'){
-      for(k=10;k<20;k++){
-	if(alphabet[keyboards[i][k]]==str[j][n])count++;
+      if(!(n!=0 && str[j][n]==str[j][n-1])){ //１つ前の文字と同じ時はカウントしない
+        /*ホームポジション以外の文字だったらカウント＋１*/
+        for(k=10;k<20;k++){
+	        if(alphabet[keyboards[i][k]]!=str[j][n]){
+            count++;
+            break;
+          }
+        }
+        /*小指の位置にある文字だったらさらにカウント＋１*/
+        if(str[j][n]==alphabet[keyboards[i][0]])count++;
+        if(str[j][n]==alphabet[keyboards[i][9]])count++;
+        if(str[j][n]==alphabet[keyboards[i][19]])count++;
       }
       n++;
     }
+    point += (n+1); //文字数分ポイント加算
   }
-  return count;
+  point -= count;
+  return point; //（全文字数-カウント数）が最終ポイント
 }
 
 //fitnessの合計値の計算
