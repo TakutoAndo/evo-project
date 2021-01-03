@@ -195,16 +195,18 @@ int ObjFunc(int i){
     while(str[j][n]!='\0'){
       if(!(n!=0 && str[j][n]==str[j][n-1])){ //１つ前の文字と同じ時はカウントしない
         /*ホームポジション以外の文字だったらカウント＋１*/
+        int check = 0;
         for(k=10;k<20;k++){
-	        if(alphabet[keyboards[i][k]]!=str[j][n]){
-            count++;
-            break;
+	        if(alphabet[keyboards[i][k]]==str[j][n]){
+            check = 1;
           }
         }
+        if(check==0)count++;
         /*小指の位置にある文字だったらさらにカウント＋１*/
         if(str[j][n]==alphabet[keyboards[i][0]])count++;
         if(str[j][n]==alphabet[keyboards[i][9]])count++;
-        if(str[j][n]==alphabet[keyboards[i][19]])count++;
+        if(str[j][n]==alphabet[keyboards[i][20]])count++;
+        if(str[j][n]==alphabet[keyboards[i][29]])count++;
       }
       n++;
     }
