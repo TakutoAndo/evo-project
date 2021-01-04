@@ -47,7 +47,7 @@ int GetRandom(int min,int max){
 }
 
 /*ランダムにキー入力を受付＋時間計測して重み順位付け*/
-int main(){
+int keyweightcal(){
     int i, n, k, h;
     struct eachkey tmp;
     for(i=0;i<30;i++) keys[i].key_num = i; //キーの位置番号設定
@@ -75,7 +75,6 @@ int main(){
     }
     /*結果確認用*/
     for(i=0;i<30;i++){
-        printf("キー番号(%d):%d\n",i,keyweight[i]);
+        printf("キー番号(%d)の重み:%d\n",i,keyweight[i]);
     }
-    return 0;
 }
