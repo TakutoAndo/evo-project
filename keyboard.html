@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <title>キー配列オーダーメイド</title>
+    <style>
+      body {
+        background: #ffd700;
+        font-family: Meiryo;
+      }
+      div {
+        background: #ffffff;
+        padding: 10px;
+        text-align: center;
+        border: 5px solid #cccccc;
+        margin: 30px auto;
+      }
+      button {
+        width: 50px;
+        height: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+    <h1>オリジナルキーボード</h1>
+    <p>手の癖調査、普段の文章を元にGAを行った結果、<br>あなたに適したキー配列はこのようになりました！</p>
+    <button type="button" id="pos0">Q</button>
+    <button type="button" id="pos1">W</button>
+    <button type="button" id="pos2">E</button>
+    <button type="button" id="pos3">R</button>
+    <button type="button" id="pos4">T</button>
+    <button type="button" id="pos5">Y</button>
+    <button type="button" id="pos6">U</button>
+    <button type="button" id="pos7">I</button>
+    <button type="button" id="pos8">O</button>
+    <button type="button" id="pos9">P</button>
+    <br>
+    &nbsp;&nbsp;<button type="button" id="pos10">A</button>
+    <button type="button" id="pos11">S</button>
+    <button type="button" id="pos12">D</button>
+    <button type="button" id="pos13">F</button>
+    <button type="button" id="pos14">G</button>
+    <button type="button" id="pos15">H</button>
+    <button type="button" id="pos16">J</button>
+    <button type="button" id="pos17">K</button>
+    <button type="button" id="pos18">L</button>
+    <button type="button" id="pos19">；</button>
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<button type="button" id="pos20">Z</button>
+    <button type="button" id="pos21">X</button>
+    <button type="button" id="pos22">C</button>
+    <button type="button" id="pos23">V</button>
+    <button type="button" id="pos24">B</button>
+    <button type="button" id="pos25">N</button>
+    <button type="button" id="pos26">M</button>
+    <button type="button" id="pos27">,</button>
+    <button type="button" id="pos28">.</button>
+    <button type="button" id="pos29">?</button>
+    <br><br>
+    </div>
+    <input type="file" id="selfile"><br>
+
+    <script>
+      var obj1 = document.getElementById("selfile");
+      //ダイアログでファイルが選択された時
+      obj1.addEventListener("change",function(evt){
+        var file = evt.target.files;
+        //FileReaderの作成
+        var reader = new FileReader();
+        //テキスト形式で読み込む
+        reader.readAsText(file[0]);
+        //読込終了後の処理
+        reader.onload = function(ev){
+          var K = reader.result.split(/\n/);
+          document.getElementById("pos0").innerText = K[0];
+          document.getElementById("pos1").innerText = K[1];
+          document.getElementById("pos2").innerText = K[2];
+          document.getElementById("pos3").innerText = K[3];
+          document.getElementById("pos4").innerText = K[4];
+          document.getElementById("pos5").innerText = K[5];
+          document.getElementById("pos6").innerText = K[6];
+          document.getElementById("pos7").innerText = K[7];
+          document.getElementById("pos8").innerText = K[8];
+          document.getElementById("pos9").innerText = K[9];
+          document.getElementById("pos10").innerText = K[10];
+          document.getElementById("pos11").innerText = K[11];
+          document.getElementById("pos12").innerText = K[12];
+          document.getElementById("pos13").innerText = K[13];
+          document.getElementById("pos14").innerText = K[14];
+          document.getElementById("pos15").innerText = K[15];
+          document.getElementById("pos16").innerText = K[16];
+          document.getElementById("pos17").innerText = K[17];
+          document.getElementById("pos18").innerText = K[18];
+          document.getElementById("pos19").innerText = K[19];
+          document.getElementById("pos20").innerText = K[20];
+          document.getElementById("pos21").innerText = K[21];
+          document.getElementById("pos22").innerText = K[22];
+          document.getElementById("pos23").innerText = K[23];
+          document.getElementById("pos24").innerText = K[24];
+          document.getElementById("pos25").innerText = K[25];
+          document.getElementById("pos26").innerText = K[26];
+          document.getElementById("pos27").innerText = K[27];
+          document.getElementById("pos28").innerText = K[28];
+          document.getElementById("pos29").innerText = K[29];
+        }
+      },false);
+    </script>
+
+  </body>
+</html>
