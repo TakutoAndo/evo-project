@@ -69,7 +69,7 @@ static unsigned long int next = 1;
 
 int Rand(void){
   next = next*1103515245 + 12345;
-  return (unsigned int)(next/65536)%32768;
+  return (unsigned int)(next/65536)%(RANDOM_MAX+1);
 }
 
 void Srand(unsigned int seed){
@@ -205,7 +205,7 @@ int ObjFunc(int i){
       }
       n++;
     }
-    point += n*30; //文字数*30ポイント加算
+    point = 100; //文字数*30ポイント加算
   }
   point -= count;
   return point; //（全文字数*30-カウント数）が最終ポイント
@@ -233,22 +233,23 @@ void Statistics(){
 }
 
 //選択
-//考える
-//現状：もっともfitnessが高い2つ
+//ルーレット
 int Select(int not_n){
-  int i;
-  int max2 = 0;
-  int max2_n = 0;
-  
-  for(i=0;i<POP_SIZE;i++){
-    if(i!=not_n){
-      if(max2<fitness[i]){
-	max2 = fitness[i];
-	max2_n = i;
-      }
-    }
+  int i,n=0;
+  double rand;
+  double fit_rate_loading[POP_SIZE] = {};
+  fit_rate_loading[0] = (double)fitness[0]/(double)sumfitness;
+
+  for(i=1;i<POP_SIZE;i++){
+    fit_rate_loading[i] = fit_rate_loading[i-1] + (double)fitness[i]/(double)sumfitness;
   }
-  return max2_n;
+
+  rand = (double)Rand()/((double)(RANDOM_MAX+1));    //0<=num<1とする
+  while(fit_rate_loading[n]<rand){
+    n++;
+  }
+  if(n!=not_n){return n;}
+  else{return Select(not_n);}
 }
 
 //交叉
