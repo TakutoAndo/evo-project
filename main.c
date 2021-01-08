@@ -27,7 +27,7 @@ void Crossover(int parent1,int parent2,int *child1, int *child2);
 void Mutation(int child);
 int ObjFunc(int i);
 int Select();
-void filewrite(int keyboard[]);
+void filewrite(int keyboard[],char* phase);
 
 #define EMPTY -2
 #define Used -1
@@ -61,7 +61,7 @@ void filewrite(int keyboard[]);
 
 int key_options[LEN_KEYS];     //配置可能なキー
 int STRINGS = 0;
-char* str[] = {};   //str[STRINGS] = {"WATASHIHA","HOSHIIDESU"};   //日本語文字列
+char str[256][256] = {};   //str[STRINGS] = {"WATASHIHA","HOSHIIDESU"};   //日本語文字列
 char alphabet[27] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','!'};
 
 //擬似乱数
@@ -96,7 +96,7 @@ void be_empty(int i){
 //初期データ設定
 void Initialize(){
   int i,j,n;
-
+  
   for(i=0;i<POP_SIZE;i++){
     init_key_options();
     for(j=0;j<LEN_KEYS;j++){
@@ -357,14 +357,8 @@ void fileread(){
 	if(fp == NULL) {
 	  exit(1);
 	}
-
-	//memset(str, NULL, sizeof(char*) * STRINGS);
 	
-	for (i = 0; fgets(text, 256, fp) != NULL; ++i){
-		// 文字列格納用領域を動的確保
-		str[i] = (char*)(malloc(sizeof(char) * strlen(text) + 1));
-
-		// 文字列のコピー
+	for (i = 0; fgets(text, 256, fp) != NULL; i++){
 		strcpy(str[i], text);
 	}
 	STRINGS = i;
@@ -372,10 +366,11 @@ void fileread(){
 	fclose(fp);
 }
 
-void filewrite(int keyboard[]){
+void filewrite(int keyboard[],char* phase){
   int i;
-  char* file = strcat(name,".txt");
-  FILE* f = fopen(file, "w");
+  char filename[256];
+  strcpy(filename,name);
+  FILE* f = fopen(strcat(strcat(filename,phase),"_result.txt"), "w");
 
   for(i=0;i<LEN_KEYS;i++){
     fprintf(f, "%c\n", alphabet[keyboard[i]]);
@@ -387,18 +382,25 @@ void filewrite(int keyboard[]){
 
 //メイン関数
 int main(int argc,char **argv){
-  int gen;
+  int gen,i;
   
   Srand((unsigned) time(NULL)); //seed値変更
 
   printf("名前を入力してください -> ");
   scanf("%s",name);
   fileread();
-  
+
   keyweightcal(); //指のクセ診断（キーの重み付け）
   Initialize();
+  
   for(gen=1;gen<=MAX_GEN;gen++){
     Generation(gen);
+    if(gen==1)
+      filewrite(keyboards[n_max],"_first");
+    if(gen==MAX_GEN/2)
+      filewrite(keyboards[n_max],"_intermediate");
+    if(gen==MAX_GEN)
+      filewrite(keyboards[n_max],"_final");
   }
-  filewrite(keyboards[n_max]);
+
 }
