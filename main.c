@@ -5,8 +5,8 @@
 #include "keytime.h"
 #include<string.h>
 
-#define MAX_GEN 30        //最大世代交代
-#define POP_SIZE 20       //集団のサイズ
+#define MAX_GEN 50        //最大世代交代
+#define POP_SIZE 100       //集団のサイズ
 #define LEN_KEYS 30      //遺伝子の長さ
 #define GEN_GAP 0.2       //世代交代の割合
 #define P_MUTATION 0.1    //突然変異の確率
