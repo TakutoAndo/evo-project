@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<time.h>
 #include<math.h>
+#include "keytime.h"
 
 #define MAX_GEN 30        //最大世代交代
 #define POP_SIZE 20       //集団のサイズ
@@ -194,26 +195,17 @@ int ObjFunc(int i){
     int n = 0; //文字列の添字
     while(str[j][n]!='\0'){
       if(!(n!=0 && str[j][n]==str[j][n-1])){ //１つ前の文字と同じ時はカウントしない
-        /*ホームポジション以外の文字だったらカウント＋１*/
-        int check = 0;
-        for(k=10;k<20;k++){
-	        if(alphabet[keyboards[i][k]]==str[j][n]){
-            check = 1;
-          }
+        for(k=0;k<30;k++){
+          if(alphabet[keyboards[i][k]]==str[j][n]) break;
         }
-        if(check==0)count++;
-        /*小指の位置にある文字だったらさらにカウント＋１*/
-        if(str[j][n]==alphabet[keyboards[i][0]])count++;
-        if(str[j][n]==alphabet[keyboards[i][9]])count++;
-        if(str[j][n]==alphabet[keyboards[i][20]])count++;
-        if(str[j][n]==alphabet[keyboards[i][29]])count++;
+        count += keyweight[k];
       }
       n++;
     }
-    point += (n+1); //文字数分ポイント加算
+    point += n*30; //文字数*30ポイント加算
   }
   point -= count;
-  return point; //（全文字数-カウント数）が最終ポイント
+  return point; //（全文字数*30-カウント数）が最終ポイント
 }
 
 //fitnessの合計値の計算
@@ -355,10 +347,8 @@ void Mutation(int child){
 //メイン関数
 int main(int argc,char **argv){
   int gen;
-
+  keyweightcal(); //指のクセ診断（キーの重み付け）
   Srand((unsigned) time(NULL)); //seed値変更
   Initialize();
   for(gen=1;gen<=MAX_GEN;gen++)Generation(gen);
 }
-      
-      
