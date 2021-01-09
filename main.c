@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<time.h>
 #include<math.h>
-#include "keytime.h"
+#include "keytime2.h"
 
 #define MAX_GEN 30        //最大世代交代
 #define POP_SIZE 20       //集団のサイズ
@@ -202,10 +202,10 @@ int ObjFunc(int i){
       }
       n++;
     }
-    point += n*30; //文字数*30ポイント加算
+    point += n*10000000; //文字数*10000000ポイント加算←全部10秒かかった設定
   }
   point -= count;
-  return point; //（全文字数*30-カウント数）が最終ポイント
+  return point; //（全文字数*10000000-カウント数）が最終ポイント
 }
 
 //fitnessの合計値の計算
