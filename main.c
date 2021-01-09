@@ -3,21 +3,24 @@
 #include<time.h>
 #include<math.h>
 #include "keytime2.h"
+#include "keytime.h"
+#include<string.h>
 
-#define MAX_GEN 30        //最大世代交代
-#define POP_SIZE 20       //集団のサイズ
+#define MAX_GEN 50        //最大世代交代
+#define POP_SIZE 100       //集団のサイズ
 #define LEN_KEYS 30      //遺伝子の長さ
 #define GEN_GAP 0.2       //世代交代の割合
 #define P_MUTATION 0.1    //突然変異の確率
 #define RANDOM_MAX 32767 
 #define BEFORE 0
 #define AFTER 1
-  
+
+char name[256];
 int keyboards[POP_SIZE][LEN_KEYS];  //染色体(キーボード配列)
 int fitness[POP_SIZE];               //適合度
 int max,min,sumfitness;              //適合度の,max,min,sum
 int n_min;                           //適合度のminの添字
-int n_max;                           //適合度のminの添字
+int n_max;                           //適合度のmaxの添字
 
 void PrintKeyboardFitness();
 void Statistics();
@@ -25,6 +28,7 @@ void Crossover(int parent1,int parent2,int *child1, int *child2);
 void Mutation(int child);
 int ObjFunc(int i);
 int Select();
+void filewrite(int keyboard[],char* phase);
 
 #define EMPTY -2
 #define Used -1
@@ -57,8 +61,8 @@ int Select();
 #define Others 26
 
 int key_options[LEN_KEYS];     //配置可能なキー
-#define STRINGS 2
-char* str[STRINGS] = {"WATASHIHA","HOSHIIDESU"};   //日本語文字列
+int STRINGS = 0;
+char str[256][256] = {};   //str[STRINGS] = {"WATASHIHA","HOSHIIDESU"};   //日本語文字列
 char alphabet[27] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','!'};
 
 //擬似乱数
@@ -66,7 +70,7 @@ static unsigned long int next = 1;
 
 int Rand(void){
   next = next*1103515245 + 12345;
-  return (unsigned int)(next/65536)%32768;
+  return (unsigned int)(next/65536)%(RANDOM_MAX+1);
 }
 
 void Srand(unsigned int seed){
@@ -93,7 +97,7 @@ void be_empty(int i){
 //初期データ設定
 void Initialize(){
   int i,j,n;
-
+  
   for(i=0;i<POP_SIZE;i++){
     init_key_options();
     for(j=0;j<LEN_KEYS;j++){
@@ -187,7 +191,7 @@ void Generation(int gen){
 //考える
 //現状：ホームポジションにあるキーが入力されたらcount++(簡単だったから)
 int ObjFunc(int i){
-  
+
   int j,k = 0;
   int count = 0; //指が移動してしまった回数
   int point = 0; //返す評価値
@@ -195,10 +199,10 @@ int ObjFunc(int i){
     int n = 0; //文字列の添字
     while(str[j][n]!='\0'){
       if(!(n!=0 && str[j][n]==str[j][n-1])){ //１つ前の文字と同じ時はカウントしない
-        for(k=0;k<30;k++){
+	for(k=0;k<30;k++){
           if(alphabet[keyboards[i][k]]==str[j][n]) break;
         }
-        count += keyweight[k];
+	count += keyweight[k];
       }
       n++;
     }
@@ -230,22 +234,23 @@ void Statistics(){
 }
 
 //選択
-//考える
-//現状：もっともfitnessが高い2つ
+//ルーレット
 int Select(int not_n){
-  int i;
-  int max2 = 0;
-  int max2_n = 0;
-  
-  for(i=0;i<POP_SIZE;i++){
-    if(i!=not_n){
-      if(max2<fitness[i]){
-	max2 = fitness[i];
-	max2_n = i;
-      }
-    }
+  int i,n=0;
+  double rand;
+  double fit_rate_loading[POP_SIZE] = {};
+  fit_rate_loading[0] = (double)fitness[0]/(double)sumfitness;
+
+  for(i=1;i<POP_SIZE;i++){
+    fit_rate_loading[i] = fit_rate_loading[i-1] + (double)fitness[i]/(double)sumfitness;
   }
-  return max2_n;
+
+  rand = (double)Rand()/((double)(RANDOM_MAX+1));    //0<=num<1とする
+  while(fit_rate_loading[n]<rand){
+    n++;
+  }
+  if(n!=not_n){return n;}
+  else{return Select(not_n);}
 }
 
 //交叉
@@ -344,11 +349,60 @@ void Mutation(int child){
   }
 }
 
+void fileread(){
+  FILE *fp;
+  int i=0;
+	char fname[] = "learning.txt";
+	char text[256];
+ 
+	fp = fopen(fname, "r"); 
+	if(fp == NULL) {
+	  exit(1);
+	}
+	
+	for (i = 0; fgets(text, 256, fp) != NULL; i++){
+		strcpy(str[i], text);
+	}
+	STRINGS = i;
+	
+	fclose(fp);
+}
+
+void filewrite(int keyboard[],char* phase){
+  int i;
+  char filename[256];
+  strcpy(filename,name);
+  FILE* f = fopen(strcat(strcat(filename,phase),"_result.txt"), "w");
+
+  for(i=0;i<LEN_KEYS;i++){
+    fprintf(f, "%c\n", alphabet[keyboard[i]]);
+  }
+
+  fclose(f);
+}
+  
+
 //メイン関数
 int main(int argc,char **argv){
-  int gen;
-  keyweightcal(); //指のクセ診断（キーの重み付け）
+  int gen,i;
+  
   Srand((unsigned) time(NULL)); //seed値変更
+
+  printf("名前を入力してください -> ");
+  scanf("%s",name);
+  fileread();
+
+  keyweightcal(); //指のクセ診断（キーの重み付け）
   Initialize();
-  for(gen=1;gen<=MAX_GEN;gen++)Generation(gen);
+  
+  for(gen=1;gen<=MAX_GEN;gen++){
+    Generation(gen);
+    if(gen==1)
+      filewrite(keyboards[n_max],"_first");
+    if(gen==MAX_GEN/2)
+      filewrite(keyboards[n_max],"_intermediate");
+    if(gen==MAX_GEN)
+      filewrite(keyboards[n_max],"_final");
+  }
+
 }
