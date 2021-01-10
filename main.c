@@ -11,7 +11,7 @@
 #define LEN_KEYS 30      //遺伝子の長さ
 #define GEN_GAP 0.2       //世代交代の割合
 #define P_MUTATION 0.1    //突然変異の確率
-#define RANDOM_MAX 32767 
+#define RANDOM_MAX 32767
 #define BEFORE 0
 #define AFTER 1
 
@@ -97,7 +97,7 @@ void be_empty(int i){
 //初期データ設定
 void Initialize(){
   int i,j,n;
-  
+
   for(i=0;i<POP_SIZE;i++){
     init_key_options();
     for(j=0;j<LEN_KEYS;j++){
@@ -134,14 +134,16 @@ void PrintStatistics(int gen){
 	 gen,max,min,sumfitness,(double)sumfitness/(double)POP_SIZE);
 }
 
-void PrintCrossover(int flag,int parent1,int parent2,int child1,int child2,int n_cross){
+void PrintCrossover(int flag,int parent1,int parent2,int child1,int child2,int n_cross1, int n_cross2){
   switch(flag){
   case BEFORE:
     printf("parent1 |");PrintEachKeyboardFitness(parent1);
     printf("parent2 |");PrintEachKeyboardFitness(parent2);
     printf("delete1 |");PrintEachKeyboardFitness(child1);
     printf("delete2 |");PrintEachKeyboardFitness(child2);
-    printf("n_cross=%d\n",n_cross);
+    printf("n_cross1=%d\n",n_cross1);
+    printf("n_cross2=%d\n",n_cross2);
+
     break;
   case AFTER:
     printf("child1 |");PrintEachKeyboardFitness(child1);
@@ -256,7 +258,7 @@ int Select(int not_n){
 //交叉
 void Crossover(int parent1,int parent2,int *child1, int *child2){
   int min2;
-  int n_cross;
+  int n_cross1, n_cross2; //染色体の切断点
   int i,j,n;
 
   //1番小さい値を子供としてセット
@@ -272,9 +274,16 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   }
   //交叉方法考える
   //現状:交叉位置で親1と親2のキーを使用キーが被らないように配置(説明むずい）
-  
+
   //交叉位置
-  n_cross = Rand()%(LEN_KEYS-1)+1; //n_cross = 1,...,29
+  n_cross1 = Rand()%17+1; //n_cross = 1,...,18(とりあえずハードコーディング...)
+  n_cross2 = n_cross1 + 10;
+
+  //交叉
+  //TODO: 部分写像交叉でやる
+PrintCrossover(BEFORE, parent1, parent2, *child1, *child2, )
+
+/*
   //交叉
   PrintCrossover(BEFORE,parent1,parent2,*child1,*child2,n_cross);
   init_key_options();
@@ -323,6 +332,7 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   fitness[*child2] = ObjFunc(*child2);
   PrintCrossover(AFTER,parent1,parent2,*child1,*child2,n_cross);
 }
+*/
 
 
 //突然変異方法考える
