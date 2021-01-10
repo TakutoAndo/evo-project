@@ -46,6 +46,7 @@
 
 **交配方法**
 部分一致交叉(部分写像交叉)を利用
+
 http://ono-t.d.dooo.jp/GA/GA-order.html#PMX
 
 https://www.sist.ac.jp/~kanakubo/research/evolutionary_computing/ga_operators.html
