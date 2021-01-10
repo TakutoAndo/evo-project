@@ -5,6 +5,7 @@
 #include "keytime2.h"
 #include "keytime.h"
 #include<string.h>
+#include<stdbool.h>
 
 #define MAX_GEN 50        //最大世代交代
 #define POP_SIZE 100       //集団のサイズ
@@ -165,7 +166,7 @@ void PrintMutation(int flag,int child,int n_mutate1,int n_mutate2){
     break;
   }
 }
-    
+
 //世代の処理
 void Generation(int gen){
   int parent1,parent2;
@@ -260,6 +261,12 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   int min2;
   int n_cross1, n_cross2; //染色体の切断点
   int i,j,n;
+  bool _isDuplicate; //重複があるか
+  int memory[10][2]; //入れ替えた要素の定義を保存
+  int mem_n;
+  int parent_elem;
+  int x,y; //ループの添字
+
 
   //1番小さい値を子供としてセット
   *child1 = n_min;
@@ -276,12 +283,68 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   //現状:交叉位置で親1と親2のキーを使用キーが被らないように配置(説明むずい）
 
   //交叉位置
-  n_cross1 = Rand()%17+1; //n_cross = 1,...,18(とりあえずハードコーディング...)
-  n_cross2 = n_cross1 + 10;
+  n_cross1 = Rand()%16+1; //n_cross = 1,...,17 (とりあえずハードコーディング...)
+  n_cross2 = n_cross1 + 11;
 
   //交叉
   //TODO: 部分写像交叉でやる
-PrintCrossover(BEFORE, parent1, parent2, *child1, *child2, )
+PrintCrossover(BEFORE, parent1, parent2, *child1, *child2, n_cross1, n_cross2);
+init_key_options();
+be_empty(*child1);
+mem_n=0;
+for(j=n_cross1; j<n_cross2; j++){
+  //親2の切断点間の要素を子に配置/ 要素のペア定義を記憶
+  keyboards[*child1][j] = keyboards[parent2][j];
+  key_options[keyboards[parent2][j]] = Used;
+
+  //この処理は子1の生成時のみ行う
+  memory[mem_n][1] = keyboards[parent1][j];
+  memory[mem_n][2] = keyboards[parent2][j];
+  mem_n++;
+}
+//EMPTY=-2,Used=-1, 親1に子で使われていない要素があれば、そのまま子に配置 (切断点より前)
+for(j=0; j<n_cross1; j++){
+  //使われていない要素か探索
+  _isDuplicate = false;
+  for(n=0; n<LEN_KEYS; n++){
+    if(key_options[keyboards[parent1][j]] == -1) _isDuplicate = true;
+  }
+  if(_isDuplicate == false){
+    keyboards[*child1][j] = keyboards[parent1][j];
+    key_options[keyboards[parents1][j]] = Used;
+  }
+}
+//EMPTY=-2,Used=-1, 親1に子で使われていない要素があれば、そのまま子に配置 (切断点より後)
+for(j=n_cross2+1; j<LEN_KEYS; j++){
+  //使われていない要素か探索
+  _isDuplicate = false;
+  for(n=0; n<LEN_KEYS; n++){
+    if(key_options[keyboards[parent1][j]] == -1) _isDuplicate= true;
+  }
+  if(_isDuplicate == false){
+    keyboards[*child1][j] = keyboards[parent1][j];
+    key_options[keyboards[parent1][j]] = Used;
+  }
+}
+//残りのEMPTYにはペア定義を参照して衝突しないように要素を配置
+for(j=0; j<LEN_KEYS; j++){
+  if(keyboards[*child1][j] == -2){
+    parent_elem = keyboards[parent1][j];
+    //ペア定義の中からparent_elemを探索
+    for(y=0;y<10; y++){
+      for(x=0; x<2; x++){
+        //衝突を起こさないように配置
+        if(memory[y][x] == parent_elem){
+          if(x == 0){
+            keyboards[*child][j] = memory[y][1];
+          }else{
+            keyboards[*child][j] = memroy[y][0];
+          }
+        }
+      }
+    }
+  }
+}
 
 /*
   //交叉
@@ -306,7 +369,7 @@ PrintCrossover(BEFORE, parent1, parent2, *child1, *child2, )
       key_options[n] = Used;
     }
   }
-      
+
   init_key_options();
   be_empty(*child2);
   for(j=0;j<n_cross;j++){
