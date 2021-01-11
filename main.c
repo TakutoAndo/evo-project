@@ -170,9 +170,9 @@ void Generation(int gen){
   int parent1,parent2;
   int child1,child2;
   int n_gen;
-  int i;
+  int i,j;
   int parent_options[POP_SIZE] = {};
-  //int min2;
+  int min2;
 
   //集団の表示
   Statistics();
@@ -182,21 +182,21 @@ void Generation(int gen){
   n_gen=(int)((double)POP_SIZE*GEN_GAP/2.0);
   for(i=0;i<n_gen;i++){
     Statistics();
-    /*
+    
     //1番小さい値を子供としてセット
     child1 = n_min;
     //2番目に小さい値を見つける
     min2 = 2147483647; //int最大値
-    for(i=0;i<POP_SIZE;i++){
-      if(i!=child1){
-	if(min<=fitness[i]&&fitness[i]<min2){
-	  min2 = fitness[i]; child2  = i;
+    for(j=0;j<POP_SIZE;j++){
+      if(j!=child1){
+	if(min<=fitness[j]&&fitness[j]<min2){
+	  min2 = fitness[j]; child2  = j;
 	}
       }
     }
     parent_options[child1] = 1;
     parent_options[child2] = 1;
-    */
+
     parent1 = Select(parent_options);
     parent_options[parent1] = 1;
     parent2 = Select(parent_options);
@@ -297,18 +297,6 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   int mem_n;
   int parent_elem;
   int x,y; //ループの添字
-
-  //1番小さい値を子供としてセット
-    *child1 = n_min;
-    //2番目に小さい値を見つける
-    min2 = 2147483647; //int最大値
-    for(i=0;i<POP_SIZE;i++){
-      if(i!=*child1){
-	if(min<=fitness[i]&&fitness[i]<min2){
-	  min2 = fitness[i]; *child2  = i;
-	}
-      }
-    }
 
   //交叉位置
   n_cross1 = Rand()%16+1; //n_cross = 1,...,17 (とりあえずハードコーディング...)
