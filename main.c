@@ -3,7 +3,6 @@
 #include<time.h>
 #include<math.h>
 #include "keytime2.h"
-#include "keytime.h"
 #include<string.h>
 #include<stdbool.h>
 
