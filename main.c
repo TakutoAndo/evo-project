@@ -206,11 +206,11 @@ int ObjFunc(int i){
       }
       n++;
     }
-    point += n*1000; //文字数*1000ポイント加算←全部10秒かかった設定
+    point += n*10000; //文字数*10000ポイント加算←全部10秒かかった設定
   }
   point -= count;
   printf("count:%d",count);
-  return point; //（全文字数*1000-カウント数）が最終ポイント
+  return point; //（全文字数*10000-カウント数）が最終ポイント
 }
 
 //fitnessの合計値の計算
