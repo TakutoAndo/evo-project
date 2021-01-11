@@ -4,6 +4,7 @@
 #include <sys/time.h>
 #include "conio.h"
 
+
 struct eachkey{
     int key_num; //キーの位置番号
     double keytimes; //各キー入力時間保存用
@@ -58,10 +59,10 @@ void keyweightcal(){
             n = GetRandom(0,29);
         }
         keys[n].keytimes = keytime(keyplace[n]);
-        keyweight[n] = keys[n].keytimes * 1000000; //小数点をなくした数値
+        keyweight[n] = keys[n].keytimes * 1000; //小数点をなくした数値
     }
     /*結果確認用*/
-    for(i=0;i<30;i++){ 
+    for(i=0;i<30;i++){
         printf("キー番号(%d)の重み:%d\n",i,keyweight[i]);
     }
 }
