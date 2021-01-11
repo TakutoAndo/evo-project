@@ -279,8 +279,7 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
       }
     }
   }
-  //交叉方法考える
-  //現状:交叉位置で親1と親2のキーを使用キーが被らないように配置(説明むずい）
+
 
   //交叉位置
   n_cross1 = Rand()%16+1; //n_cross = 1,...,17 (とりあえずハードコーディング...)
@@ -288,166 +287,115 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
 
   //交叉
   //TODO: 部分写像交叉でやる
-PrintCrossover(BEFORE, parent1, parent2, *child1, *child2, n_cross1, n_cross2);
-init_key_options();
-be_empty(*child1);
-mem_n=0;
-for(j=n_cross1; j<n_cross2; j++){
-  //親2の切断点間の要素を子に配置/ 要素のペア定義を記憶
-  keyboards[*child1][j] = keyboards[parent2][j];
-  key_options[keyboards[parent2][j]] = Used;
-
-  //この処理は子1の生成時のみ行う
-  memory[mem_n][1] = keyboards[parent1][j];
-  memory[mem_n][2] = keyboards[parent2][j];
-  mem_n++;
-}
-//EMPTY=-2,Used=-1, 親1に子で使われていない要素があれば、そのまま子に配置 (切断点より前)
-for(j=0; j<n_cross1; j++){
-  //使われていない要素か探索
-  _isDuplicate = false;
-  for(n=0; n<LEN_KEYS; n++){
-    if(key_options[keyboards[parent1][j]] == -1) _isDuplicate = true;
-  }
-  if(_isDuplicate == false){
-    keyboards[*child1][j] = keyboards[parent1][j];
-    key_options[keyboards[parent1][j]] = Used;
-  }
-}
-//EMPTY=-2,Used=-1, 親1に子で使われていない要素があれば、そのまま子に配置 (切断点より後)
-for(j=n_cross2+1; j<LEN_KEYS; j++){
-  //使われていない要素か探索
-  _isDuplicate = false;
-  for(n=0; n<LEN_KEYS; n++){
-    if(key_options[keyboards[parent1][j]] == -1) _isDuplicate= true;
-  }
-  if(_isDuplicate == false){
-    keyboards[*child1][j] = keyboards[parent1][j];
-    key_options[keyboards[parent1][j]] = Used;
-  }
-}
-//残りのEMPTYにはペア定義を参照して衝突しないように要素を配置
-for(j=0; j<LEN_KEYS; j++){
-  if(keyboards[*child1][j] == -2){
-    parent_elem = keyboards[parent1][j];
-    //ペア定義の中からparent_elemを探索
-    for(y=0;y<10; y++){
-      for(x=0; x<2; x++){
-        //衝突を起こさないように配置
-        if(memory[y][x] == parent_elem){
-          if(x == 0){
-            keyboards[*child1][j] = memory[y][1];
-          }else{
-            keyboards[*child1][j] = memory[y][0];
-          }
-        }
-      }
-    }
-  }
-}
-
-init_key_options();
-be_empty(*child2);
-for(j=n_cross1; j<n_cross2; j++){
-  //親1の切断点間の要素を子に配置/ 要素のペア定義を記憶
-  keyboards[*child2][j] = keyboards[parent1][j];
-  key_options[keyboards[parent1][j]] = Used;
-}
-//EMPTY=-2,Used=-1, 親2に子で使われていない要素があれば、そのまま子に配置 (切断点より前)
-for(j=0; j<n_cross1; j++){
-  //使われていない要素か探索
-  _isDuplicate = false;
-  for(n=0; n<LEN_KEYS; n++){
-    if(key_options[keyboards[parent2][j]] == -1) _isDuplicate = true;
-  }
-  if(_isDuplicate == false){
-    keyboards[*child2][j] = keyboards[parent2][j];
-    key_options[keyboards[parent2][j]] = Used;
-  }
-}
-//EMPTY=-2,Used=-1, 親2に子で使われていない要素があれば、そのまま子に配置 (切断点より後)
-for(j=n_cross2+1; j<LEN_KEYS; j++){
-  //使われていない要素か探索
-  _isDuplicate = false;
-  for(n=0; n<LEN_KEYS; n++){
-    if(key_options[keyboards[parent2][j]] == -1) _isDuplicate= true;
-  }
-  if(_isDuplicate == false){
-    keyboards[*child2][j] = keyboards[parent2][j];
-    key_options[keyboards[parent2][j]] = Used;
-  }
-}
-//残りのEMPTYにはペア定義を参照して衝突しないように要素を配置
-for(j=0; j<LEN_KEYS; j++){
-  if(keyboards[*child2][j] == -2){
-    parent_elem = keyboards[parent2][j];
-    //ペア定義の中からparent_elemを探索
-    for(y=0;y<10; y++){
-      for(x=0; x<2; x++){
-        //衝突を起こさないように配置
-        if(memory[y][x] == parent_elem){
-          if(x == 0){
-            keyboards[*child2][j] = memory[y][1];
-          }else{
-            keyboards[*child2][j] = memory[y][0];
-          }
-        }
-      }
-    }
-  }
-}
-
-
-
-/*
-  //交叉
-  PrintCrossover(BEFORE,parent1,parent2,*child1,*child2,n_cross);
+  PrintCrossover(BEFORE, parent1, parent2, *child1, *child2, n_cross1, n_cross2);
   init_key_options();
   be_empty(*child1);
-  for(j=0;j<n_cross;j++){
-    keyboards[*child1][j] = keyboards[parent1][j];
-    key_options[keyboards[parent1][j]] = Used;
+  mem_n=0;
+  for(j=n_cross1; j<n_cross2; j++){
+    //親2の切断点間の要素を子に配置/ 要素のペア定義を記憶
+    keyboards[*child1][j] = keyboards[parent2][j];
+    key_options[keyboards[parent2][j]] = Used;
+
+    //この処理は子1の生成時のみ行う
+    memory[mem_n][1] = keyboards[parent1][j];
+    memory[mem_n][2] = keyboards[parent2][j];
+    mem_n++;
   }
-  for(j=n_cross;j<LEN_KEYS;j++){
-    if(key_options[keyboards[parent2][j]] != Used){
-      keyboards[*child1][j] = keyboards[parent2][j];
-      key_options[keyboards[parent2][j]] = Used;
+  //EMPTY=-2,Used=-1, 親1に子で使われていない要素があれば、そのまま子に配置 (切断点より前)
+  for(j=0; j<n_cross1; j++){
+    //使われていない要素か探索
+    _isDuplicate = false;
+    for(n=0; n<LEN_KEYS; n++){
+      if(key_options[keyboards[parent1][j]] == -1) _isDuplicate = true;
+    }
+    if(_isDuplicate == false){
+      keyboards[*child1][j] = keyboards[parent1][j];
+      key_options[keyboards[parent1][j]] = Used;
     }
   }
-  for(j=0;j<LEN_KEYS;j++){
-    if(keyboards[*child1][j]==EMPTY){
-      n = Rand()%LEN_KEYS;
-      while(key_options[n]==Used){n++;if(n>LEN_KEYS-1)n=A;} //まだ使われていないキーの検索
-      keyboards[*child1][j] = key_options[n];
-      key_options[n] = Used;
+  //EMPTY=-2,Used=-1, 親1に子で使われていない要素があれば、そのまま子に配置 (切断点より後)
+  for(j=n_cross2+1; j<LEN_KEYS; j++){
+    //使われていない要素か探索
+    _isDuplicate = false;
+    for(n=0; n<LEN_KEYS; n++){
+      if(key_options[keyboards[parent1][j]] == -1) _isDuplicate= true;
+    }
+    if(_isDuplicate == false){
+      keyboards[*child1][j] = keyboards[parent1][j];
+      key_options[keyboards[parent1][j]] = Used;
+    }
+  }
+  //残りのEMPTYにはペア定義を参照して衝突しないように要素を配置
+  for(j=0; j<LEN_KEYS; j++){
+    if(keyboards[*child1][j] == -2){
+      parent_elem = keyboards[parent1][j];
+      //ペア定義の中からparent_elemを探索
+      for(y=0;y<10; y++){
+        for(x=0; x<2; x++){
+          //衝突を起こさないように配置
+          if(memory[y][x] == parent_elem){
+            if(x == 0){
+              keyboards[*child1][j] = memory[y][1];
+            }else{
+              keyboards[*child1][j] = memory[y][0];
+            }
+          }
+        }
+      }
     }
   }
 
   init_key_options();
   be_empty(*child2);
-  for(j=0;j<n_cross;j++){
-    keyboards[*child2][j] = keyboards[parent2][j];
-    key_options[keyboards[parent2][j]] = Used;
+  for(j=n_cross1; j<n_cross2; j++){
+    //親1の切断点間の要素を子に配置/ 要素のペア定義を記憶
+    keyboards[*child2][j] = keyboards[parent1][j];
+    key_options[keyboards[parent1][j]] = Used;
   }
-  for(j=n_cross;j<LEN_KEYS;j++){
-    if(key_options[keyboards[parent1][j]] != Used){
-      keyboards[*child2][j] = keyboards[parent1][j];
-      key_options[keyboards[parent1][j]] = Used;
+  //EMPTY=-2,Used=-1, 親2に子で使われていない要素があれば、そのまま子に配置 (切断点より前)
+  for(j=0; j<n_cross1; j++){
+    //使われていない要素か探索
+    _isDuplicate = false;
+    for(n=0; n<LEN_KEYS; n++){
+      if(key_options[keyboards[parent2][j]] == -1) _isDuplicate = true;
+    }
+    if(_isDuplicate == false){
+      keyboards[*child2][j] = keyboards[parent2][j];
+      key_options[keyboards[parent2][j]] = Used;
     }
   }
-  for(j=0;j<LEN_KEYS;j++){
-    if(keyboards[*child2][j]==EMPTY){
-      n = Rand()%LEN_KEYS;
-      while(key_options[n]==Used){n++;if(n>LEN_KEYS-1)n=A;} //まだ使われていないキーの検索
-      keyboards[*child2][j] = key_options[n];
-      key_options[n] = Used;
+  //EMPTY=-2,Used=-1, 親2に子で使われていない要素があれば、そのまま子に配置 (切断点より後)
+  for(j=n_cross2+1; j<LEN_KEYS; j++){
+    //使われていない要素か探索
+    _isDuplicate = false;
+    for(n=0; n<LEN_KEYS; n++){
+      if(key_options[keyboards[parent2][j]] == -1) _isDuplicate= true;
+    }
+    if(_isDuplicate == false){
+      keyboards[*child2][j] = keyboards[parent2][j];
+      key_options[keyboards[parent2][j]] = Used;
     }
   }
-  fitness[*child1] = ObjFunc(*child1);
-  fitness[*child2] = ObjFunc(*child2);
-  PrintCrossover(AFTER,parent1,parent2,*child1,*child2,n_cross);
+  //残りのEMPTYにはペア定義を参照して衝突しないように要素を配置
+  for(j=0; j<LEN_KEYS; j++){
+    if(keyboards[*child2][j] == -2){
+      parent_elem = keyboards[parent2][j];
+      //ペア定義の中からparent_elemを探索
+      for(y=0;y<10; y++){
+        for(x=0; x<2; x++){
+          //衝突を起こさないように配置
+          if(memory[y][x] == parent_elem){
+            if(x == 0){
+              keyboards[*child2][j] = memory[y][1];
+            }else{
+              keyboards[*child2][j] = memory[y][0];
+            }
+          }
+        }
+      }
+    }
+  }
 }
-*/
 
 
 //突然変異方法考える
@@ -479,17 +427,17 @@ void fileread(){
   int i=0;
 	char fname[] = "learning.txt";
 	char text[256];
- 
+
 	fp = fopen(fname, "r");
 	if(fp == NULL) {
 	  exit(1);
 	}
-	
+
 	for (i = 0; fgets(text, 256, fp) != NULL; i++){
 		strcpy(str[i], text);
 	}
 	STRINGS = i;
-	
+
 	fclose(fp);
 }
 
