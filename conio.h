@@ -15,7 +15,7 @@ int getch(void)
     tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
     return ch;
 }
- 
+
 /* reads from keypress, echoes */
 int getche(void)
 {
