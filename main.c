@@ -338,7 +338,7 @@ for(j=0; j<LEN_KEYS; j++){
           if(x == 0){
             keyboards[*child1][j] = memory[y][1];
           }else{
-            keyboards[*child1][j] = memroy[y][0];
+            keyboards[*child1][j] = memory[y][0];
           }
         }
       }
@@ -389,7 +389,7 @@ for(j=0; j<LEN_KEYS; j++){
           if(x == 0){
             keyboards[*child2][j] = memory[y][1];
           }else{
-            keyboards[*child2][j] = memroy[y][0];
+            keyboards[*child2][j] = memory[y][0];
           }
         }
       }
@@ -443,7 +443,6 @@ for(j=0; j<LEN_KEYS; j++){
       key_options[n] = Used;
     }
   }
-  
   fitness[*child1] = ObjFunc(*child1);
   fitness[*child2] = ObjFunc(*child2);
   PrintCrossover(AFTER,parent1,parent2,*child1,*child2,n_cross);
@@ -481,7 +480,7 @@ void fileread(){
 	char fname[] = "learning.txt";
 	char text[256];
  
-	fp = fopen(fname, "r"); 
+	fp = fopen(fname, "r");
 	if(fp == NULL) {
 	  exit(1);
 	}
