@@ -59,7 +59,7 @@ void keyweightcal(){
             n = GetRandom(0,29);
         }
         keys[n].keytimes = keytime(keyplace[n]);
-        keyweight[n] = keys[n].keytimes * 100; //小数点をなくした数値
+        keyweight[n] = keys[n].keytimes * 1000; //小数点をなくした数値
     }
     /*結果確認用*/
     for(i=0;i<30;i++){ 
