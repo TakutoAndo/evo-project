@@ -62,7 +62,7 @@ void keyweightcal(){
         keyweight[n] = keys[n].keytimes * 1000; //小数点をなくした数値
     }
     /*結果確認用*/
-    for(i=0;i<30;i++){ 
+    for(i=0;i<30;i++){
         printf("キー番号(%d)の重み:%d\n",i,keyweight[i]);
     }
 }
