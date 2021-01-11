@@ -209,7 +209,6 @@ int ObjFunc(int i){
     point += n*10000; //文字数*10000ポイント加算←全部10秒かかった設定
   }
   point -= count;
-  printf("count:%d",count);
   return point; //（全文字数*10000-カウント数）が最終ポイント
 }
 
