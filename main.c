@@ -3,7 +3,6 @@
 #include<time.h>
 #include<math.h>
 #include "keytime2.h"
-#include "keytime.h"
 #include<string.h>
 
 #define MAX_GEN 50        //最大世代交代
@@ -355,7 +354,7 @@ void fileread(){
 	char fname[] = "learning.txt";
 	char text[256];
  
-	fp = fopen(fname, "r"); 
+	fp = fopen(fname, "r");
 	if(fp == NULL) {
 	  exit(1);
 	}
