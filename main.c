@@ -274,6 +274,11 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   PrintCrossover(BEFORE,parent1,parent2,*child1,*child2,n_cross);
   init_key_options();
   be_empty(*child1);
+  be_empty(*child2);
+  /*
+  PrintCrossover(BEFORE,parent1,parent2,*child1,*child2,n_cross);
+  init_key_options();
+  be_empty(*child1);
   for(j=0;j<n_cross;j++){
     keyboards[*child1][j] = keyboards[parent1][j];
     key_options[keyboards[parent1][j]] = Used;
@@ -318,7 +323,7 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   fitness[*child2] = ObjFunc(*child2);
   PrintCrossover(AFTER,parent1,parent2,*child1,*child2,n_cross);
 }
-
+*/
 
 //突然変異方法考える
 //現状：一定確率でキー入れ替わり
