@@ -218,7 +218,7 @@ void Statistics(){
   int i;
 
   max = 0;
-  min = RANDOM_MAX;    //後で適切な値に変更
+  min = 2147483647;
   sumfitness = 0;
 
   for(i=0;i<POP_SIZE;i++){
