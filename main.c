@@ -2,7 +2,6 @@
 #include<stdlib.h>
 #include<time.h>
 #include<math.h>
-#include "keytime2.h"
 #include "keytime.h"
 #include<string.h>
 
@@ -58,12 +57,15 @@ void filewrite(int keyboard[],char* phase);
 #define X 23
 #define Y 24
 #define Z 25
-#define Others 26
+#define Others1 26
+#define Others2 27
+#define Others3 28
+#define Others4 29
 
 int key_options[LEN_KEYS];     //配置可能なキー
 int STRINGS = 0;
 char str[256][256] = {};   //str[STRINGS] = {"WATASHIHA","HOSHIIDESU"};   //日本語文字列
-char alphabet[27] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','!'};
+char alphabet[30] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',':','<','>','?'};
 
 //擬似乱数
 static unsigned long int next = 1;
@@ -80,11 +82,7 @@ void Srand(unsigned int seed){
 void init_key_options(){
   int i;
   for(i=0;i<LEN_KEYS;i++){
-    if(i<26){
-      key_options[i] = i;
-    }else{
-      key_options[i] = 26;
-    }
+    key_options[i] = i;
   }
 }
 
