@@ -6,11 +6,11 @@
 #include<string.h>
 #include<stdbool.h>
 
-#define MAX_GEN 5        //最大世代交代
+#define MAX_GEN 50        //最大世代交代
 #define POP_SIZE 100       //集団のサイズ
 #define LEN_KEYS 30      //遺伝子の長さ
-#define GEN_GAP 0.2       //世代交代の割合
-#define P_MUTATION 0.1    //突然変異の確率
+#define GEN_GAP 0.1      //世代交代の割合
+#define P_MUTATION 0.05    //突然変異の確率
 #define RANDOM_MAX 32767
 #define BEFORE 0
 #define AFTER 1
@@ -171,6 +171,8 @@ void Generation(int gen){
   int child1,child2;
   int n_gen;
   int i;
+  int parent_options[POP_SIZE] = {};
+  //int min2;
 
   //集団の表示
   Statistics();
@@ -180,8 +182,25 @@ void Generation(int gen){
   n_gen=(int)((double)POP_SIZE*GEN_GAP/2.0);
   for(i=0;i<n_gen;i++){
     Statistics();
-    parent1 = Select(-1);
-    parent2 = Select(parent1);
+    /*
+    //1番小さい値を子供としてセット
+    child1 = n_min;
+    //2番目に小さい値を見つける
+    min2 = 2147483647; //int最大値
+    for(i=0;i<POP_SIZE;i++){
+      if(i!=child1){
+	if(min<=fitness[i]&&fitness[i]<min2){
+	  min2 = fitness[i]; child2  = i;
+	}
+      }
+    }
+    parent_options[child1] = 1;
+    parent_options[child2] = 1;
+    */
+    parent1 = Select(parent_options);
+    parent_options[parent1] = 1;
+    parent2 = Select(parent_options);
+    parent_options[parent2] = 1;
     Crossover(parent1,parent2,&child1,&child2);
     Mutation(child1);
     Mutation(child2);
@@ -258,7 +277,7 @@ void Statistics(){
   int i;
 
   max = 0;
-  min = 2147483647;
+  min = 2147483647; //int最大値
   sumfitness = 0;
 
   for(i=0;i<POP_SIZE;i++){
@@ -276,7 +295,7 @@ void Statistics(){
 
 //選択
 //ルーレット
-int Select(int not_n){
+int Select(int parent_options[]){
   int i,n=0;
   double rand;
   double fit_rate_loading[POP_SIZE] = {};
@@ -290,8 +309,8 @@ int Select(int not_n){
   while(fit_rate_loading[n]<rand){
     n++;
   }
-  if(n!=not_n){return n;}
-  else{return Select(not_n);}
+  if(parent_options[n]!=1){return n;}
+  else{return Select(parent_options);}
 }
 
 //交叉
@@ -306,22 +325,22 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   int x,y; //ループの添字
 
   //1番小さい値を子供としてセット
-  *child1 = n_min;
-  //2番目に小さい値を見つける
-  min2 = POP_SIZE;
-  for(i=0;i<POP_SIZE;i++){
-    if(i!=*child1){
-      if(min<=fitness[i]&&fitness[i]<min2){
-	min2 = fitness[i]; *child2  = i;
+    *child1 = n_min;
+    //2番目に小さい値を見つける
+    min2 = 2147483647; //int最大値
+    for(i=0;i<POP_SIZE;i++){
+      if(i!=*child1){
+	if(min<=fitness[i]&&fitness[i]<min2){
+	  min2 = fitness[i]; *child2  = i;
+	}
       }
     }
-  }
 
   //交叉位置
   n_cross1 = Rand()%16+1; //n_cross = 1,...,17 (とりあえずハードコーディング...)
   n_cross2 = n_cross1 + 11;
-  printf("n_cross1:%d\n", n_cross1);
-  printf("n_cross2:%d\n",n_cross2);
+  //printf("n_cross1:%d\n", n_cross1);
+  //printf("n_cross2:%d\n",n_cross2);
 
   //交叉
   //TODO: 部分写像交叉でやる
@@ -436,6 +455,9 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
       }
     }
   }
+  fitness[*child1] = ObjFunc(*child1);
+  fitness[*child2] = ObjFunc(*child2);
+  PrintCrossover(AFTER, parent1, parent2, *child1, *child2, n_cross1, n_cross2);
 }
 
 //突然変異方法考える
@@ -517,5 +539,5 @@ int main(int argc,char **argv){
     if(gen==MAX_GEN)
       filewrite(keyboards[n_max],"_final");
   }
-  
+  PrintEachKeyboardFitness(n_max);  
 }
