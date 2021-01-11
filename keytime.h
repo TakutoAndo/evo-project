@@ -46,8 +46,8 @@ int GetRandom(int min,int max){
 	return min + (int)(rand()*(max-min+1.0)/(1.0+RAND_MAX));
 }
 
-/*ランダムにキー入力を受付＋時間計測して重み順位付け*/
-int keyweightcal(){
+/*ランダムにキー入力を受付＋時間計測*/
+void keyweightcal(){
     int i, n, k, h;
     struct eachkey tmp;
     for(i=0;i<30;i++) keys[i].key_num = i; //キーの位置番号設定
@@ -58,23 +58,10 @@ int keyweightcal(){
             n = GetRandom(0,29);
         }
         keys[n].keytimes = keytime(keyplace[n]);
-    }
-    /*ソート*/
-    for(k=0;k<30;k++){
-        for(h=k+1;h<30;h++){
-            if(keys[k].keytimes > keys[h].keytimes){
-                tmp =  keys[k];
-                keys[k] = keys[h];
-                keys[h] = tmp;
-            }
-        }
-    }
-    /*重み付け*/
-    for(i=0;i<30;i++){
-        keyweight[keys[i].key_num] = i;
+        keyweight[n] = keys[n].keytimes * 1000000; //小数点をなくした数値
     }
     /*結果確認用*/
-    for(i=0;i<30;i++){
+    for(i=0;i<30;i++){ 
         printf("キー番号(%d)の重み:%d\n",i,keyweight[i]);
     }
 }
