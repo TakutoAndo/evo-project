@@ -188,6 +188,40 @@ void Generation(int gen){
   }
 }
 
+/*今回考えない文字除外関数*/
+int is_keyword(char c){
+  if(c == 'A') return 1;
+  if(c == 'B') return 1;
+  if(c == 'C') return 1;
+  if(c == 'D') return 1;
+  if(c == 'E') return 1;
+  if(c == 'F') return 1;
+  if(c == 'G') return 1;
+  if(c == 'H') return 1;
+  if(c == 'I') return 1;
+  if(c == 'J') return 1;
+  if(c == 'L') return 1;
+  if(c == 'M') return 1;
+  if(c == 'N') return 1;
+  if(c == 'O') return 1;
+  if(c == 'P') return 1;
+  if(c == 'Q') return 1;
+  if(c == 'R') return 1;
+  if(c == 'S') return 1;
+  if(c == 'T') return 1;
+  if(c == 'U') return 1;
+  if(c == 'V') return 1;
+  if(c == 'W') return 1;
+  if(c == 'X') return 1;
+  if(c == 'Y') return 1;
+  if(c == 'Z') return 1;
+  if(c == ':') return 1;
+  if(c == '<') return 1;
+  if(c == '>') return 1;
+  if(c == '?') return 1;
+  return 0;
+}
+
 //目的関数(各文字列sを打つときに指が移動した回数/文字数　が少ない方が優れている(指ごとに重み付け？))
 //考える
 //現状：ホームポジションにあるキーが入力されたらcount++(簡単だったから)
@@ -198,14 +232,18 @@ int ObjFunc(int i){
   int point = 0; //返す評価値
   for(j=0;j<STRINGS;j++){
     int n = 0; //文字列の添字
+    int s = 0; //有効な文字のカウント
     while(str[j][n]!='\0'){
+      if(is_keyword(str[j][n])==1){ //今回考えるキーか確認
       if(!(n!=0 && str[j][n]==str[j][n-1])){ //１つ前の文字と同じ時はカウントしない
-	for(k=0;k<=29;k++){
+	      for(k=0;k<=29;k++){
           if(alphabet[keyboards[i][k]]==str[j][n]) break;
         }
-	  if(k!=30){
-      count += keyweight[k];
-    }
+	      if(k!=30){
+          count += keyweight[k];
+        }
+        s++;
+      }
       }
       n++;
     }
