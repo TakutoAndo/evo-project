@@ -190,35 +190,9 @@ void Generation(int gen){
 
 /*今回考えない文字除外関数*/
 int is_keyword(char c){
-  if(c == 'A') return 1;
-  if(c == 'B') return 1;
-  if(c == 'C') return 1;
-  if(c == 'D') return 1;
-  if(c == 'E') return 1;
-  if(c == 'F') return 1;
-  if(c == 'G') return 1;
-  if(c == 'H') return 1;
-  if(c == 'I') return 1;
-  if(c == 'J') return 1;
-  if(c == 'L') return 1;
-  if(c == 'M') return 1;
-  if(c == 'N') return 1;
-  if(c == 'O') return 1;
-  if(c == 'P') return 1;
-  if(c == 'Q') return 1;
-  if(c == 'R') return 1;
-  if(c == 'S') return 1;
-  if(c == 'T') return 1;
-  if(c == 'U') return 1;
-  if(c == 'V') return 1;
-  if(c == 'W') return 1;
-  if(c == 'X') return 1;
-  if(c == 'Y') return 1;
-  if(c == 'Z') return 1;
-  if(c == ':') return 1;
-  if(c == '<') return 1;
-  if(c == '>') return 1;
-  if(c == '?') return 1;
+  for (int i=0;i<30;i++){
+    if(c==alphabet[i]) return 1;
+  }
   return 0;
 }
 
