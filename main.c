@@ -7,7 +7,7 @@
 #include<string.h>
 #include<stdbool.h>
 
-#define MAX_GEN 50        //最大世代交代
+#define MAX_GEN 300        //最大世代交代
 #define POP_SIZE 100       //集団のサイズ
 #define LEN_KEYS 30      //遺伝子の長さ
 #define GEN_GAP 0.1      //世代交代の割合
@@ -533,7 +533,21 @@ void filewrite(int keyboard[],char* phase){
 
   fclose(f);
 }
+
+void filewrite_csv(int gen){
+  int i;
+  char filename[256];
+  strcpy(filename,name);
+  FILE* f = fopen(strcat(filename,"_maxfitness_result.csv"),"a");
   
+  if(gen==0){
+    fprintf(f, "\"世代\",\"最大評価値\"\n");
+  }else{
+    fprintf(f, "%d,%d\n", gen,max);
+  }
+
+  fclose(f);
+}
 
 //メイン関数
 int main(int argc,char **argv){
@@ -547,6 +561,8 @@ int main(int argc,char **argv){
 
   keyweightcal(); //指のクセ診断（キーの重み付け）
   Initialize();
+
+  filewrite_csv(0);
   
   for(gen=1;gen<=MAX_GEN;gen++){
     Generation(gen);
@@ -556,6 +572,7 @@ int main(int argc,char **argv){
       filewrite(keyboards[n_max],"_intermediate");
     if(gen==MAX_GEN)
       filewrite(keyboards[n_max],"_final");
+    filewrite_csv(gen);
   }
   PrintEachKeyboardFitness(n_max);  
 }
