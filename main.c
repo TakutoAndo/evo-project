@@ -6,11 +6,11 @@
 #include<string.h>
 #include<stdbool.h>
 
-#define MAX_GEN 5        //最大世代交代
+#define MAX_GEN 50        //最大世代交代
 #define POP_SIZE 100       //集団のサイズ
 #define LEN_KEYS 30      //遺伝子の長さ
-#define GEN_GAP 0.2       //世代交代の割合
-#define P_MUTATION 0.1    //突然変異の確率
+#define GEN_GAP 0.1      //世代交代の割合
+#define P_MUTATION 0.05    //突然変異の確率
 #define RANDOM_MAX 32767
 #define BEFORE 0
 #define AFTER 1
@@ -170,7 +170,9 @@ void Generation(int gen){
   int parent1,parent2;
   int child1,child2;
   int n_gen;
-  int i;
+  int i,j;
+  int parent_options[POP_SIZE] = {};
+  int min2;
 
   //集団の表示
   Statistics();
@@ -180,12 +182,37 @@ void Generation(int gen){
   n_gen=(int)((double)POP_SIZE*GEN_GAP/2.0);
   for(i=0;i<n_gen;i++){
     Statistics();
-    parent1 = Select(-1);
-    parent2 = Select(parent1);
+    
+    //1番小さい値を子供としてセット
+    child1 = n_min;
+    //2番目に小さい値を見つける
+    min2 = 2147483647; //int最大値
+    for(j=0;j<POP_SIZE;j++){
+      if(j!=child1){
+	if(min<=fitness[j]&&fitness[j]<min2){
+	  min2 = fitness[j]; child2  = j;
+	}
+      }
+    }
+    parent_options[child1] = 1;
+    parent_options[child2] = 1;
+
+    parent1 = Select(parent_options);
+    parent_options[parent1] = 1;
+    parent2 = Select(parent_options);
+    parent_options[parent2] = 1;
     Crossover(parent1,parent2,&child1,&child2);
     Mutation(child1);
     Mutation(child2);
   }
+}
+
+/*今回考えない文字除外関数*/
+int is_keyword(char c){
+  for (int i=0;i<30;i++){
+    if(c==alphabet[i]) return 1;
+  }
+  return 0;
 }
 
 //目的関数(各文字列sを打つときに指が移動した回数/文字数　が少ない方が優れている(指ごとに重み付け？))
@@ -198,14 +225,18 @@ int ObjFunc(int i){
   int point = 0; //返す評価値
   for(j=0;j<STRINGS;j++){
     int n = 0; //文字列の添字
+    int s = 0; //有効な文字のカウント
     while(str[j][n]!='\0'){
+      if(is_keyword(str[j][n])==1){ //今回考えるキーか確認
       if(!(n!=0 && str[j][n]==str[j][n-1])){ //１つ前の文字と同じ時はカウントしない
-	for(k=0;k<=29;k++){
+	      for(k=0;k<=29;k++){
           if(alphabet[keyboards[i][k]]==str[j][n]) break;
         }
-	  if(k!=30){
-      count += keyweight[k];
-    }
+	      if(k!=30){
+          count += keyweight[k];
+        }
+        s++;
+      }
       }
       n++;
     }
@@ -220,7 +251,7 @@ void Statistics(){
   int i;
 
   max = 0;
-  min = 2147483647;
+  min = 2147483647; //int最大値
   sumfitness = 0;
 
   for(i=0;i<POP_SIZE;i++){
@@ -238,7 +269,7 @@ void Statistics(){
 
 //選択
 //ルーレット
-int Select(int not_n){
+int Select(int parent_options[]){
   int i,n=0;
   double rand;
   double fit_rate_loading[POP_SIZE] = {};
@@ -252,8 +283,8 @@ int Select(int not_n){
   while(fit_rate_loading[n]<rand){
     n++;
   }
-  if(n!=not_n){return n;}
-  else{return Select(not_n);}
+  if(parent_options[n]!=1){return n;}
+  else{return Select(parent_options);}
 }
 
 //交叉
@@ -266,18 +297,6 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   int mem_n;
   int parent_elem;
   int x,y; //ループの添字
-
-  //1番小さい値を子供としてセット
-  *child1 = n_min;
-  //2番目に小さい値を見つける
-  min2 = POP_SIZE;
-  for(i=0;i<POP_SIZE;i++){
-    if(i!=*child1){
-      if(min<=fitness[i]&&fitness[i]<min2){
-	min2 = fitness[i]; *child2  = i;
-      }
-    }
-  }
 
   //交叉位置
   n_cross1 = Rand()%16+1; //n_cross = 1,...,17 (とりあえずハードコーディング...)
@@ -398,6 +417,9 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
       }
     }
   }
+  fitness[*child1] = ObjFunc(*child1);
+  fitness[*child2] = ObjFunc(*child2);
+  PrintCrossover(AFTER, parent1, parent2, *child1, *child2, n_cross1, n_cross2);
 }
 
 //突然変異方法考える
@@ -479,5 +501,5 @@ int main(int argc,char **argv){
     if(gen==MAX_GEN)
       filewrite(keyboards[n_max],"_final");
   }
-  
+  PrintEachKeyboardFitness(n_max);  
 }
