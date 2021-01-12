@@ -268,7 +268,38 @@ void Statistics(){
 }
 
 //選択
-//ルーレット
+//ルーレット→ランキング
+int Select(int parent_options[]){
+  int i,j,tmp,rand_n;
+  double rand;
+  int fit_rank[POP_SIZE];
+  double fit_rank_rate[POP_SIZE] = {};
+  double max_rate = 0.8;
+  int rank_limit = 50; //ランク付けする個体数（残りは確率0)
+
+  for(i=0;i<POP_SIZE;i++){fit_rank[i]=i;}
+
+  //fitnessが高い順に個体の添字を降順ソート
+  for(i=0;i<POP_SIZE;i++){
+    for(j=i+1;j<POP_SIZE;j++){
+      if(fitness[fit_rank[i]] < fitness[fit_rank[j]]){
+	tmp = fit_rank[i];
+	fit_rank[i] = fit_rank[j];
+	fit_rank[j] = tmp;
+      }
+    }
+  }
+
+  for(i=0;i<rank_limit;i++){
+    fit_rank_rate[i] = max_rate - (double)(i/(rank_limit/(max_rate*10)))/10.0;
+  }
+
+  rand_n = (int)(((double)Rand()/(double)(RANDOM_MAX+1))*(double)rank_limit);//0<=num<50とする
+  rand = (double)Rand()/((double)(RANDOM_MAX+1));    //0<=num<1とする
+  if(rand < fit_rank_rate[rand_n] && parent_options[rand_n]!=1){return rand_n;}
+  else{return Select(parent_options);}
+}
+/*
 int Select(int parent_options[]){
   int i,n=0;
   double rand;
@@ -286,6 +317,7 @@ int Select(int parent_options[]){
   if(parent_options[n]!=1){return n;}
   else{return Select(parent_options);}
 }
+*/
 
 //交叉
 void Crossover(int parent1,int parent2,int *child1, int *child2){
