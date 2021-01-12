@@ -215,25 +215,45 @@ int is_keyword(char c){
   return 0;
 }
 
+int is_index_finger(int b, int c){
+  if(b==3 && c==4) return 1;
+  if(b==4 && c==3) return 1;
+  if(b==5 && c==6) return 1;
+  if(b==6 && c==5) return 1;
+  if(b==6 && c==5) return 1;
+  if(b==13 && c==14) return 1;
+  if(b==14 && c==13) return 1;
+  if(b==15 && c==16) return 1;
+  if(b==16 && c==15) return 1;
+  if(b==23 && c==24) return 1;
+  if(b==24 && c==23) return 1;
+  if(b==25 && c==26) return 1;
+  if(b==26 && c==25) return 1;
+  return 0;
+}
+
 //目的関数(各文字列sを打つときに指が移動した回数/文字数　が少ない方が優れている(指ごとに重み付け？))
 //考える
 //現状：ホームポジションにあるキーが入力されたらcount++(簡単だったから)
 int ObjFunc(int i){
 
-  int j,k = 0;
+  int j,k,bk = 0;
+  int ck = -1;
   int count = 0; //指が移動してしまった回数
   int point = 0; //返す評価値
   for(j=0;j<STRINGS;j++){
     int n = 0; //文字列の添字
     int s = 0; //有効な文字のカウント
     while(str[j][n]!='\0'){
-      if(is_keyword(str[j][n])==1){ //今回考えるキーか確認
+      if(is_keyword(str[j][n])){ //今回考えるキーか確認
       if(!(n!=0 && str[j][n]==str[j][n-1])){ //１つ前の文字と同じ時はカウントしない
+        bk = ck;
 	      for(k=0;k<=29;k++){
-          if(alphabet[keyboards[i][k]]==str[j][n]) break;
+          if(alphabet[keyboards[i][k]]==str[j][n]) ck=k; break;
         }
 	      if(k!=30){
-          count += keyweight[k];
+          if(is_index_finger(bk, k)){count += keyweight[k]/2;}
+          else{count += keyweight[k];}
         }
         s++;
       }
