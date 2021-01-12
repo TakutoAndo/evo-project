@@ -541,7 +541,7 @@ void filewrite_csv(int gen){
   FILE* f = fopen(strcat(filename,"_maxfitness_result.csv"),"a");
   
   if(gen==0){
-    fprintf(f, "世代,最大評価値\n");
+    fprintf(f, "\"世代\",\"最大評価値\"\n");
   }else{
     fprintf(f, "%d,%d\n", gen,max);
   }
