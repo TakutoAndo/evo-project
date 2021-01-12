@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<time.h>
 #include<math.h>
-#include "keytime.h"
+#include "testkeytime.h"
 #include<string.h>
 #include<stdbool.h>
 
