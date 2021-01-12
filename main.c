@@ -6,7 +6,7 @@
 #include<string.h>
 #include<stdbool.h>
 
-#define MAX_GEN 1        //最大世代交代
+#define MAX_GEN 10      //最大世代交代
 #define POP_SIZE 100       //集団のサイズ
 #define LEN_KEYS 30      //遺伝子の長さ
 #define GEN_GAP 0.1      //世代交代の割合
