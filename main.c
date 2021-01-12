@@ -3,6 +3,7 @@
 #include<time.h>
 #include<math.h>
 #include "testkeytime.h"
+//#include "keytime.h"
 #include<string.h>
 #include<stdbool.h>
 
@@ -249,7 +250,10 @@ int ObjFunc(int i){
       if(!(n!=0 && str[j][n]==str[j][n-1])){ //１つ前の文字と同じ時はカウントしない
         bk = ck;
 	      for(k=0;k<=29;k++){
-          if(alphabet[keyboards[i][k]]==str[j][n]) ck=k; break;
+          if(alphabet[keyboards[i][k]]==str[j][n]){
+            ck=k; 
+            break;
+          }
         }
 	      if(k!=30){
           if(is_index_finger(bk, k)){count += keyweight[k]/2;}
