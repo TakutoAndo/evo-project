@@ -6,7 +6,7 @@
 #include<string.h>
 #include<stdbool.h>
 
-#define MAX_GEN 50        //最大世代交代
+#define MAX_GEN 1        //最大世代交代
 #define POP_SIZE 100       //集団のサイズ
 #define LEN_KEYS 30      //遺伝子の長さ
 #define GEN_GAP 0.1      //世代交代の割合
@@ -352,7 +352,7 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
     if(keyboards[*child1][j] == -2){
       parent_elem = keyboards[parent1][j];
       //ペア定義の中からparent_elemを探索
-      for(y=0;y<10; y++){
+      for(y=0;y<11; y++){
         for(x=0; x<2; x++){
           //衝突を起こさないように配置
           if(memory[x][y] == parent_elem){
@@ -403,7 +403,7 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
     if(keyboards[*child2][j] == -2){
       parent_elem = keyboards[parent2][j];
       //ペア定義の中からparent_elemを探索
-      for(y=0;y<10; y++){
+      for(y=0;y<11; y++){
         for(x=0; x<2; x++){
           //衝突を起こさないように配置
           if(memory[x][y] == parent_elem){
