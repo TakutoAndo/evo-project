@@ -358,11 +358,8 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   //交叉位置
   n_cross1 = Rand()%16+1; //n_cross = 1,...,17 (とりあえずハードコーディング...)
   n_cross2 = n_cross1 + 11;
-  //printf("n_cross1:%d\n", n_cross1);
-  //printf("n_cross2:%d\n",n_cross2);
 
   //交叉
-  //TODO: 部分写像交叉でやる
   PrintCrossover(BEFORE, parent1, parent2, *child1, *child2, n_cross1, n_cross2);
   init_key_options();
   be_empty(*child1);
@@ -406,17 +403,13 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   //残りのEMPTYにはペア定義を参照して衝突しないように要素を配置
   for(j=0; j<LEN_KEYS; j++){
     if(keyboards[*child1][j] == -2){
+      //EMPTY部分の親の要素を保存
       parent_elem = keyboards[parent1][j];
-      /*
-      printf("keyoption:[");
-      for (n=0; n<LEN_KEYS; n++){
-        printf("%d,", key_options[n]);
-      }
-      printf("]\n");
-      */
+      //フローチャート始まり
       while(1){
         for(v=0;v<11; v++){
           for(z=0; z<2; z++){
+            //要素がメモリ内にあったとき、ペアを_candidateに入れてループ抜ける
             if(memory[z][v] == parent_elem){
               if(z == 0){
                 _candidate = memory[1][v];
@@ -428,6 +421,7 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
             }
           }
         }
+        //_candidateが配列にあるかないか。　あり-> parent_elemに_candidate入れてフローチャート頭に戻る{このときmemoryを潰す(無限ループ対策)}/ なし-> _candidateを染色体に配置してループ抜ける
         OUT1:
             if(key_options[_candidate] != -1){
               keyboards[*child1][j] = _candidate;
@@ -481,10 +475,13 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   //残りのEMPTYにはペア定義を参照して衝突しないように要素を配置
   for(j=0; j<LEN_KEYS; j++){
     if(keyboards[*child2][j] == -2){
+       //EMPTY部分の親の要素を保存
       parent_elem = keyboards[parent2][j];
+       //フローチャート始まり
       while(1){
         for(v=0;v<11; v++){
           for(z=0; z<2; z++){
+             //要素がメモリ内にあったとき、ペアを_candidateに入れてループ抜ける
             if(memory[z][v] == parent_elem){
               if(z == 0){
                 _candidate = memory[1][v];
@@ -496,6 +493,7 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
             }
           }
         }
+        //_candidateが配列にあるかないか。　あり-> parent_elemに_candidate入れてフローチャート頭に戻る{このときmemoryを潰す(無限ループ対策)}/ なし-> _candidateを染色体に配置してループ抜ける
         OUT2:
             if(key_options[_candidate] != -1){
               keyboards[*child2][j] = _candidate;
