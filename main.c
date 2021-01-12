@@ -335,7 +335,7 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   }
 
   //EMPTY=-2,Used=-1, 親1に子で使われていない要素があれば、そのまま子に配置 (切断点より後)
-  for(j=n_cross2+1; j<LEN_KEYS; j++){
+  for(j=n_cross2; j<LEN_KEYS; j++){
     //使われていない要素か探索
     _isDuplicate = false;
     for(n=0; n<LEN_KEYS; n++){
@@ -387,7 +387,7 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
     }
   }
   //EMPTY=-2,Used=-1, 親2に子で使われていない要素があれば、そのまま子に配置 (切断点より後)
-  for(j=n_cross2+1; j<LEN_KEYS; j++){
+  for(j=n_cross2; j<LEN_KEYS; j++){
     //使われていない要素か探索
     _isDuplicate = false;
     for(n=0; n<LEN_KEYS; n++){
