@@ -282,8 +282,8 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   //交叉位置
   n_cross1 = Rand()%16+1; //n_cross = 1,...,17 (とりあえずハードコーディング...)
   n_cross2 = n_cross1 + 11;
-  printf("n_cross1:%d\n", n_cross1);
-  printf("n_cross2:%d\n",n_cross2);
+  //printf("n_cross1:%d\n", n_cross1);
+  //printf("n_cross2:%d\n",n_cross2);
 
   //交叉
   //TODO: 部分写像交叉でやる
