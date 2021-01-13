@@ -66,7 +66,7 @@ void filewrite(int keyboard[],char* phase);
 
 int key_options[LEN_KEYS];     //配置可能なキー
 int STRINGS = 0;
-char str[256][256] = {};   //str[STRINGS] = {"WATASHIHA","HOSHIIDESU"};   //日本語文字列
+char str[10][10000] = {};   //10行10000文字
 char alphabet[30] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',':','<','>','?'};
 
 //擬似乱数
