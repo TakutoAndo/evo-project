@@ -130,8 +130,13 @@ void PrintKeyboardFitness(){
 }
 
 void PrintStatistics(int gen){
+  if(gen==-1){
+    printf("[gen=%dend] max=%d min=%d sumfitness=%d ave=%f\n",
+	   MAX_GEN,max,min,sumfitness,(double)sumfitness/(double)POP_SIZE);
+  }else{
   printf("[gen=%2d] max=%d min=%d sumfitness=%d ave=%f\n",
 	 gen,max,min,sumfitness,(double)sumfitness/(double)POP_SIZE);
+  }
 }
 
 void PrintCrossover(int flag,int parent1,int parent2,int child1,int child2,int n_cross1, int n_cross2){
@@ -541,9 +546,9 @@ void filewrite_csv(int gen){
   FILE* f = fopen(strcat(filename,"_maxfitness_result.csv"),"a");
   
   if(gen==0){
-    fprintf(f, "\"世代\",\"最大評価値\"\n");
+    fprintf(f, "\"世代\",\"評価値平均\"\n");
   }else{
-    fprintf(f, "%d,%d\n", gen,max);
+    fprintf(f, "%d,%f\n", gen,(double)sumfitness/(double)POP_SIZE);
   }
 
   fclose(f);
@@ -574,5 +579,6 @@ int main(int argc,char **argv){
       filewrite(keyboards[n_max],"_final");
     filewrite_csv(gen);
   }
-  PrintEachKeyboardFitness(n_max);  
+  Statistics();
+  PrintStatistics(-1); 
 }
