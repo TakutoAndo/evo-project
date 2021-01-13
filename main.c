@@ -7,7 +7,7 @@
 #include<string.h>
 #include<stdbool.h>
 
-#define MAX_GEN 300        //最大世代交代
+#define MAX_GEN 50      //最大世代交代
 #define POP_SIZE 100       //集団のサイズ
 #define LEN_KEYS 30      //遺伝子の長さ
 #define GEN_GAP 0.1      //世代交代の割合
@@ -355,18 +355,16 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   int i,j,n;
   bool _isDuplicate; //重複があるか
   int memory[2][11]; //入れ替えた要素の定義を保存
-  int mem_n;
+  int mem_n; //memory[][]まわすための添字
   int parent_elem;
-  int x,y; //ループの添字
+  int x,y,v,z; //ループの添字
+  int _candidate; //parent_elemのペアのkey(候補)
 
   //交叉位置
   n_cross1 = Rand()%16+1; //n_cross = 1,...,17 (とりあえずハードコーディング...)
   n_cross2 = n_cross1 + 11;
-  //printf("n_cross1:%d\n", n_cross1);
-  //printf("n_cross2:%d\n",n_cross2);
 
   //交叉
-  //TODO: 部分写像交叉でやる
   PrintCrossover(BEFORE, parent1, parent2, *child1, *child2, n_cross1, n_cross2);
   init_key_options();
   be_empty(*child1);
@@ -377,7 +375,6 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
     keyboards[*child1][j] = keyboards[parent2][j];
     key_options[keyboards[parent2][j]] = Used;
 
-    //この処理は子1の生成時のみ行う
     memory[0][mem_n] = keyboards[parent1][j];
     memory[1][mem_n] = keyboards[parent2][j];
     mem_n++;
@@ -396,7 +393,7 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   }
 
   //EMPTY=-2,Used=-1, 親1に子で使われていない要素があれば、そのまま子に配置 (切断点より後)
-  for(j=n_cross2+1; j<LEN_KEYS; j++){
+  for(j=n_cross2; j<LEN_KEYS; j++){
     //使われていない要素か探索
     _isDuplicate = false;
     for(n=0; n<LEN_KEYS; n++){
@@ -411,29 +408,50 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   //残りのEMPTYにはペア定義を参照して衝突しないように要素を配置
   for(j=0; j<LEN_KEYS; j++){
     if(keyboards[*child1][j] == -2){
+      //EMPTY部分の親の要素を保存
       parent_elem = keyboards[parent1][j];
-      //ペア定義の中からparent_elemを探索
-      for(y=0;y<10; y++){
-        for(x=0; x<2; x++){
-          //衝突を起こさないように配置
-          if(memory[x][y] == parent_elem){
-            if(x == 0){
-              keyboards[*child1][j] = memory[1][y];
-            }else{
-              keyboards[*child1][j] = memory[0][y];
+      //フローチャート始まり
+      while(1){
+        for(v=0;v<11; v++){
+          for(z=0; z<2; z++){
+            //要素がメモリ内にあったとき、ペアを_candidateに入れてループ抜ける
+            if(memory[z][v] == parent_elem){
+              if(z == 0){
+                _candidate = memory[1][v];
+                goto OUT1;
+              }else{
+                _candidate = memory[0][v];
+                goto OUT1;
+              }
             }
           }
         }
+        //_candidateが配列にあるかないか。　あり-> parent_elemに_candidate入れてフローチャート頭に戻る{このときmemoryを潰す(無限ループ対策)}/ なし-> _candidateを染色体に配置してループ抜ける
+        OUT1:
+            if(key_options[_candidate] != -1){
+              keyboards[*child1][j] = _candidate;
+              key_options[keyboards[*child1][j]] = Used;
+              break;
+            }else{
+              parent_elem = _candidate;
+              memory[0][v] = -5;
+              memory[1][v] = -5;
+            }
       }
     }
   }
 
   init_key_options();
   be_empty(*child2);
+  mem_n = 0;
   for(j=n_cross1; j<n_cross2; j++){
     //親1の切断点間の要素を子に配置/ 要素のペア定義を記憶
     keyboards[*child2][j] = keyboards[parent1][j];
     key_options[keyboards[parent1][j]] = Used;
+
+    memory[0][mem_n] = keyboards[parent1][j];
+    memory[1][mem_n] = keyboards[parent2][j];
+    mem_n++;
   }
   //EMPTY=-2,Used=-1, 親2に子で使われていない要素があれば、そのまま子に配置 (切断点より前)
   for(j=0; j<n_cross1; j++){
@@ -448,7 +466,7 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
     }
   }
   //EMPTY=-2,Used=-1, 親2に子で使われていない要素があれば、そのまま子に配置 (切断点より後)
-  for(j=n_cross2+1; j<LEN_KEYS; j++){
+  for(j=n_cross2; j<LEN_KEYS; j++){
     //使われていない要素か探索
     _isDuplicate = false;
     for(n=0; n<LEN_KEYS; n++){
@@ -462,19 +480,35 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   //残りのEMPTYにはペア定義を参照して衝突しないように要素を配置
   for(j=0; j<LEN_KEYS; j++){
     if(keyboards[*child2][j] == -2){
+       //EMPTY部分の親の要素を保存
       parent_elem = keyboards[parent2][j];
-      //ペア定義の中からparent_elemを探索
-      for(y=0;y<10; y++){
-        for(x=0; x<2; x++){
-          //衝突を起こさないように配置
-          if(memory[x][y] == parent_elem){
-            if(x == 0){
-              keyboards[*child2][j] = memory[1][y];
-            }else{
-              keyboards[*child2][j] = memory[0][y];
+       //フローチャート始まり
+      while(1){
+        for(v=0;v<11; v++){
+          for(z=0; z<2; z++){
+             //要素がメモリ内にあったとき、ペアを_candidateに入れてループ抜ける
+            if(memory[z][v] == parent_elem){
+              if(z == 0){
+                _candidate = memory[1][v];
+                goto OUT2;
+              }else{
+                _candidate = memory[0][v];
+                goto OUT2;
+              }
             }
           }
         }
+        //_candidateが配列にあるかないか。　あり-> parent_elemに_candidate入れてフローチャート頭に戻る{このときmemoryを潰す(無限ループ対策)}/ なし-> _candidateを染色体に配置してループ抜ける
+        OUT2:
+            if(key_options[_candidate] != -1){
+              keyboards[*child2][j] = _candidate;
+              key_options[keyboards[*child2][j]] = Used;
+              break;
+            }else{
+              parent_elem = _candidate;
+              memory[0][v] = -5;
+              memory[1][v] = -5;
+            }
       }
     }
   }
