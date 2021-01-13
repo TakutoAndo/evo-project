@@ -66,7 +66,7 @@ void filewrite(int keyboard[],char* phase);
 
 int key_options[LEN_KEYS];     //配置可能なキー
 int STRINGS = 0;
-char str[256][256] = {};   //str[STRINGS] = {"WATASHIHA","HOSHIIDESU"};   //日本語文字列
+char str[256][10000] = {};   //日本語文字列
 char alphabet[30] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',':','<','>','?'};
 
 //擬似乱数
@@ -88,6 +88,7 @@ void init_key_options(){
   }
 }
 
+//配列を空に（キー割り当てなしに）
 void be_empty(int i){
   int j;
   for(j=0;j<LEN_KEYS;j++)
@@ -177,7 +178,7 @@ void Generation(int gen){
   int child1,child2;
   int n_gen;
   int i,j;
-  int parent_options[POP_SIZE] = {};
+  int parent_options[POP_SIZE] = {}; //選択できる親の候補
   int min2;
 
   //集団の表示
@@ -202,7 +203,6 @@ void Generation(int gen){
     }
     parent_options[child1] = 1;
     parent_options[child2] = 1;
-
     parent1 = Select(parent_options);
     parent_options[parent1] = 1;
     parent2 = Select(parent_options);
@@ -518,8 +518,7 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   PrintCrossover(AFTER, parent1, parent2, *child1, *child2, n_cross1, n_cross2);
 }
 
-//突然変異方法考える
-//現状：一定確率でキー入れ替わり
+//一定確率でキー入れ替わり
 void Mutation(int child){
 
   int n_mutate1;
@@ -542,6 +541,7 @@ void Mutation(int child){
   }
 }
 
+//ファイルから文字列入力
 void fileread(){
   FILE *fp;
   int i=0;
@@ -561,6 +561,7 @@ void fileread(){
 	fclose(fp);
 }
 
+//ファイルに結果出力
 void filewrite(int keyboard[],char* phase){
   int i;
   char filename[256];
@@ -574,6 +575,7 @@ void filewrite(int keyboard[],char* phase){
   fclose(f);
 }
 
+//CSVファイルに結果出力
 void filewrite_csv(int gen){
   int i;
   char filename[256];
@@ -601,8 +603,8 @@ int main(int argc,char **argv){
   scanf("%s",name);
   fileread();
 
-  keyweightcal(); //指のクセ診断（キーの重み付け）
-  Initialize();
+  keyweightcal(); //キーの重み付け
+  Initialize(); //初期化
 
   filewrite_csv(0);
   
