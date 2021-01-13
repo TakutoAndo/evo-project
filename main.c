@@ -543,7 +543,7 @@ void filewrite_csv(int gen){
   int i;
   char filename[256];
   strcpy(filename,name);
-  FILE* f = fopen(strcat(filename,"_maxfitness_result.csv"),"a");
+  FILE* f = fopen(strcat(filename,"_fitnessAve_result.csv"),"a");
   
   if(gen==0){
     fprintf(f, "\"世代\",\"評価値平均\"\n");
