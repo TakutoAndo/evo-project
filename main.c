@@ -7,7 +7,7 @@
 #include<string.h>
 #include<stdbool.h>
 
-#define MAX_GEN 50      //最大世代交代
+#define MAX_GEN 700      //最大世代交代
 #define POP_SIZE 100       //集団のサイズ
 #define LEN_KEYS 30      //遺伝子の長さ
 #define GEN_GAP 0.1      //世代交代の割合
@@ -577,11 +577,13 @@ void filewrite_csv(int gen){
   int i;
   char filename[256];
   strcpy(filename,name);
-  FILE* f = fopen(strcat(filename,"_fitnessAve_result.csv"),"a");
+  FILE* f;
   
   if(gen==0){
+    f = fopen(strcat(filename,"_fitnessAve_result.csv"),"w");
     fprintf(f, "\"世代\",\"評価値平均\"\n");
   }else{
+    f = fopen(strcat(filename,"_fitnessAve_result.csv"),"a");
     fprintf(f, "%d,%f\n", gen,(double)sumfitness/(double)POP_SIZE);
   }
 
