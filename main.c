@@ -2,8 +2,8 @@
 #include<stdlib.h>
 #include<time.h>
 #include<math.h>
-#include "testkeytime.h"
-//#include "keytime.h"
+//#include "testkeytime.h"
+#include "keytime.h"
 #include<string.h>
 #include<stdbool.h>
 
@@ -348,6 +348,7 @@ int Select(int parent_options[]){
 }
 */
 
+
 //交叉
 void Crossover(int parent1,int parent2,int *child1, int *child2){
   int min2;
@@ -580,11 +581,11 @@ void filewrite_csv(int gen){
   FILE* f;
   
   if(gen==0){
-    f = fopen(strcat(filename,"_fitnessAve_result.csv"),"w");
-    fprintf(f, "\"世代\",\"評価値平均\"\n");
+    f = fopen(strcat(filename,"_Maxfitness_result.csv"),"w");
+    fprintf(f, "世代,最大評価値\n");
   }else{
-    f = fopen(strcat(filename,"_fitnessAve_result.csv"),"a");
-    fprintf(f, "%d,%f\n", gen,(double)sumfitness/(double)POP_SIZE);
+    f = fopen(strcat(filename,"_Maxfitness_result.csv"),"a");
+    fprintf(f, "%d,%d\n", gen,max);
   }
 
   fclose(f);
