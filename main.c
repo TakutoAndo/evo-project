@@ -2,16 +2,17 @@
 #include<stdlib.h>
 #include<time.h>
 #include<math.h>
-//#include "testkeytime.h"
-#include "keytime.h"
+#include "testkeytime.h"
+//#include "keytime.h"
 #include<string.h>
 #include<stdbool.h>
 
-#define MAX_GEN 700      //最大世代交代
+#define MAX_GEN 700      //最大世代交代   //文字数によって変える
 #define POP_SIZE 100       //集団のサイズ
 #define LEN_KEYS 30      //遺伝子の長さ
 #define GEN_GAP 0.1      //世代交代の割合
 #define P_MUTATION 0.05    //突然変異の確率
+#define P_CROSSOVER 0.8    //交叉率
 #define RANDOM_MAX 32767
 #define BEFORE 0
 #define AFTER 1
@@ -361,6 +362,13 @@ void Crossover(int parent1,int parent2,int *child1, int *child2){
   int parent_elem;
   int x,y,v,z; //ループの添字
   int _candidate; //parent_elemのペアのkey(候補)
+  double rand; //乱数発生用
+
+  rand = (double)Rand()/((double)(RANDOM_MAX+1));
+  if(rand > P_CROSSOVER){
+    printf("NO CROSSOVER\n");
+    return;
+  }
 
   //交叉位置
   n_cross1 = Rand()%16+1; //n_cross = 1,...,17 (とりあえずハードコーディング...)
@@ -577,6 +585,7 @@ void filewrite(int keyboard[],char* phase){
 }
 
 //CSVファイルに結果出力
+
 void filewrite_csv(int gen){
   int i;
   char filename[256];
@@ -585,10 +594,14 @@ void filewrite_csv(int gen){
   
   if(gen==0){
     f = fopen(strcat(filename,"_Maxfitness_result.csv"),"w");
-    fprintf(f, "世代,最大評価値\n");
+    fprintf(f, "gen,Maxfitness\n");
+    //f = fopen(strcat(filename,"_fitnessAve_result.csv"),"w");
+    //fprintf(f, "gen,fitnessAve\n");
   }else{
     f = fopen(strcat(filename,"_Maxfitness_result.csv"),"a");
     fprintf(f, "%d,%d\n", gen,max);
+    //f = fopen(strcat(filename,"_fitnessAve_result.csv"),"a");
+    //fprintf(f, "%d,%f\n", gen,(double)sumfitness/(double)POP_SIZE);
   }
 
   fclose(f);
